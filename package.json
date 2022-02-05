@@ -17,6 +17,9 @@
   "bugs": {
     "url": "https://github.com/Ourodemi/kirvis-js/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/Ourodemi/kirvis-js#readme",
   "files": [
     "dist/*",
