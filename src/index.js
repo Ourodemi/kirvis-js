@@ -36,4 +36,4 @@ class KirvisAPI{
     }
 }
 
-module.exports = OurodemiWebEngineAPI;
+module.exports = KirvisAPI;
