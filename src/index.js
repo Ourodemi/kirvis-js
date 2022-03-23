@@ -3,8 +3,11 @@ const axios = require('axios').default;
 class KirvisAPI{
     accessToken = null;
 
-    constructor(uri){
+    constructor(uri, options = {}){
+        let { protocol = 'https', endpoint = 'api' } = options;
         this.uri = uri;
+        this.protocol = protocol;
+        this.endpoint = endpoint;
     }
 
     async request(method, endpoint, { data, query, accessToken }){
@@ -13,23 +16,29 @@ class KirvisAPI{
                 resolve(false);
             }
 
-            await axios.post(
-                `https://${this.uri}/api/${endpoint}`, 
-                data, 
-                {
-                    headers: {
-                        'Content-Type':'application/json',
-                        'X-Authorization-Token':`${accessToken || this.accessToken}`
-                    },
-                    query
+            axios({
+                method,
+                url: `${this.protocol}://${this.uri}/${this.endpoint}/${endpoint}`,
+                data,
+                params: query,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Authorization-Token': accessToken || this.accessToken
                 }
-            ).then(({data, status}) => {
-                resolve(data.data);
-            }).catch((e) => {
-                resolve(false);
-            });
+            }).then(({data}) => resolve(data)
+            ).catch(({response}) => resolve(this.expandResponse(response.data)));
         });
     }
+
+    expandResponse(res){
+        res = res || {};
+
+        return {
+            status: res.status || 500,
+            code: res.code || 'connection_failure',
+            ...res.data || {}
+        }
+     }
 
     setAccessToken(accessToken){
         this.accessToken = accessToken;

@@ -3,10 +3,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const axios = require('axios').default;
 
 class KirvisAPI {
-  constructor(uri) {
+  constructor(uri, options = {}) {
     _defineProperty(this, "accessToken", null);
 
+    let {
+      protocol = 'https',
+      endpoint = 'api'
+    } = options;
     this.uri = uri;
+    this.protocol = protocol;
+    this.endpoint = endpoint;
   }
 
   async request(method, endpoint, {
@@ -19,21 +25,30 @@ class KirvisAPI {
         resolve(false);
       }
 
-      await axios.post(`https://${this.uri}/api/${endpoint}`, data, {
+      axios({
+        method,
+        url: `${this.protocol}://${this.uri}/${this.endpoint}/${endpoint}`,
+        data,
+        params: query,
         headers: {
           'Content-Type': 'application/json',
-          'X-Authorization-Token': `${accessToken || this.accessToken}`
-        },
-        query
+          'X-Authorization-Token': accessToken || this.accessToken
+        }
       }).then(({
-        data,
-        status
-      }) => {
-        resolve(data.data);
-      }).catch(e => {
-        resolve(false);
-      });
+        data
+      }) => resolve(data)).catch(({
+        response
+      }) => resolve(this.expandResponse(response.data)));
     });
+  }
+
+  expandResponse(res) {
+    res = res || {};
+    return {
+      status: res.status || 500,
+      code: res.code || 'connection_failure',
+      ...(res.data || {})
+    };
   }
 
   setAccessToken(accessToken) {

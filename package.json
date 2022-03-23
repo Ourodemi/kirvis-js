@@ -1,9 +1,11 @@
 {
   "name": "@ourodemi/kirvis-js",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "A Javascript SDK for Ourodemi's Kirvis Platform",
   "main": "index.js",
   "types":"dist/index.d.ts",
+  "author": "Ourodemi",
+  "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d dist"
@@ -12,8 +14,6 @@
     "type": "git",
     "url": "git+https://github.com/Ourodemi/kirvis-js.git"
   },
-  "author": "Ourodemi",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Ourodemi/kirvis-js/issues"
   },

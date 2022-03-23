@@ -1,9 +1,12 @@
 export default class KirvisAPI{
 
-    constructor(uri: string);
+    constructor(uri: string, options: {
+        protocol: string = 'https',
+        endpoint: string = 'api',
+    });
 
     public async request(
-        method: string,
+        method: string = 'GET',
         endpoint: string,
         { data, query, accessToken } : { 
             data: object,
